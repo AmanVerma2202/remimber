@@ -11,15 +11,11 @@ export const API_ORIGIN = import.meta.env.VITE_API_URL || '';
  * Shared axios instance. The dev server proxies /api and /auth to Express,
  * and the JWT travels in an httpOnly cookie automatically (withCredentials).
  */
-<<<<<<< HEAD
+
 const client = axios.create({ 
   baseURL: 'https://remimber-3w7g.onrender.com',
   withCredentials: true 
-=======
-const client = axios.create({
-  baseURL: API_ORIGIN,
-  withCredentials: true,
->>>>>>> 4d7b618 (resolve error occurs while deployment)
+
 });
 
 /** Layer on top of axios so callers get data directly (or a thrown error). */
