@@ -13,6 +13,7 @@ export function setAuthCookie(res, user) {
     httpOnly: true,
     secure: crossSite, // https only
     sameSite: crossSite ? 'none' : 'lax',
+    partitioned: crossSite, // CHIPS: keeps the cookie in cross-site (Vercel<->Render) fetches on mobile Chrome/Safari
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 }
@@ -24,6 +25,7 @@ export function clearAuthCookie(res) {
     httpOnly: true,
     secure: crossSite,
     sameSite: crossSite ? 'none' : 'lax',
+    partitioned: crossSite,
   });
 }
 

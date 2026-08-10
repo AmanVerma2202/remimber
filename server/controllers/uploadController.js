@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
+import { mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import crypto from 'crypto';
@@ -7,6 +8,9 @@ import Note from '../models/Note.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadDir = path.join(__dirname, '..', 'uploads');
+
+// ensure the upload directory exists on fresh deploys (it's gitignored)
+mkdirSync(uploadDir, { recursive: true });
 
 // Multer stores files locally (free) — served statically at /uploads.
 // Use Cloudinary/S3 instead if you outgrow a single-node setup.
