@@ -21,7 +21,7 @@ const app = express();
 // ---------- global middleware ---------
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || 'https://akaremimber.vercel.app/',
     credentials: true, // allow the httpOnly auth cookie
   })
 );
