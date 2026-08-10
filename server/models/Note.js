@@ -19,23 +19,11 @@ const elementSchema = new mongoose.Schema(
     height: { type: Number, default: 40 },
     rotation: { type: Number, default: 0 },
     zIndex: { type: Number, default: 0 },
-    style: {
-      type: new mongoose.Schema(
-        {
-          fontFamily: String,
-          fontSize: Number,
-          color: String,
-          backgroundColor: String,
-          bold: { type: Boolean, default: false },
-          italic: { type: Boolean, default: false },
-          underline: { type: Boolean, default: false },
-          borderRadius: { type: Number, default: 0 },
-          shadow: { type: Boolean, default: false },
-        },
-        { _id: false }
-      ),
-      default: {},
-    },
+    // Free-form style object. A structured subdoc used to make Mongoose strip
+    // undeclared keys — dropping rich-text `styles` (per-char fill /
+    // textBackgroundColor) on save so highlighting & colours vanished on reload.
+    // Mixed stores exactly what the client sends.
+    style: { type: mongoose.Schema.Types.Mixed, default: {} },
     // polymorphic payload: text string / shape kind / table grid / image url
     content: mongoose.Schema.Types.Mixed,
   },

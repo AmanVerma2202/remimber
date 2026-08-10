@@ -39,7 +39,13 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
-// serve locally uploaded files (images / pdfs) for free, no cloud needed
+// serve locally uploaded files (images / pdfs) for free, no cloud needed.
+// CORS header lets the client fetch them with crossOrigin:'anonymous', so a
+// canvas with such an image stays untainted (thumbnails/export keep working).
+app.use('/uploads', (_req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+}); 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ---------- routes ----------
@@ -47,6 +53,20 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.use('/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api', uploadRoutes);
+
+// ---------- error handling ---------
+
+// Production: serve the built SPA from the same origin (cookies + WS work
+// with zero CORS friction). Falls back to index.html so deep links like
+// /s/CODE and /notes/:id keep working after a refresh.
+if (existsSync(DIST)) {
+  app.use(express.static(DIST));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET') return next();
+    if (/^\/(api|auth|uploads|ws)\b/.test(req.path)) return next();
+    res.sendFile(path.join(DIST, 'index.html'));
+  });
+}
 
 app.use(notFound);
 app.use(errorHandler);

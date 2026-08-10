@@ -5,17 +5,16 @@ import axios from 'axios';
  * cross-origin hosting (SPA on Vercel, API on Render); falls back to the
  * conventional same-origin setup (Express serves the built SPA).
  */
-export const API_ORIGIN = 'https://remimber-3w7g.onrender.com';
-export const WS_ORIGIN = 'wss://remimber-3w7g.onrender.com';
+export const API_ORIGIN = import.meta.env.VITE_API_URL || '';
+export const WS_ORIGIN = '';
 /**
  * Shared axios instance. The dev server proxies /api and /auth to Express,
  * and the JWT travels in an httpOnly cookie automatically (withCredentials).
  */
 
-const client = axios.create({ 
-  baseURL: 'https://remimber-3w7g.onrender.com',
-  withCredentials: true 
-
+const client = axios.create({
+  baseURL: API_ORIGIN,
+  withCredentials: true,
 });
 
 /** Layer on top of axios so callers get data directly (or a thrown error). */

@@ -206,7 +206,17 @@ async function buildObject(el) {
 
     case 'image': {
       try {
-        const img = await fabric.Image.fromURL(el.content);
+        // crossOrigin:'anonymous' + a CORS header on /uploads keeps the canvas
+        // untainted so thumbnails/exports still work with cross-origin images.
+        let img;
+        try {
+          img = await fabric.Image.fromURL(el.content, { crossOrigin: 'anonymous' });
+        } catch {
+          // server doesn't send CORS headers yet: fall back to a plain load so
+          // the image still renders (canvas will be tainted, but persist() is
+          // safe — it never lets a thumbnail failure block the actual save).
+          img = await fabric.Image.fromURL(el.content);
+        }
         const s = Math.min(el.width / (img.width || 1), el.height / (img.height || 1));
         if (s && s < 1) img.scale(s);
         return Object.assign(img, common);
@@ -255,7 +265,7 @@ async function buildObject(el) {
       const w = el.width,
         h = el.height;
       const kids = [];
-      kids.push(new fabric.Rect({ left: 0, top: 0, width: w, height: h, rx: 10, fill: '#0d1117', stroke: '#30363d', strokeWidth: 1 }));
+      kids.push(new fabric.Rect({ left: 0, top: 0, width: w, height: h, rx: 10, fill: el.style?.backgroundColor || '#0d1117', stroke: '#30363d', strokeWidth: 1 }));
       // title bar + three mac-style dots (red / yellow / green)
       kids.push(new fabric.Rect({ left: 0, top: 0, width: w, height: 34, rx: 10, fill: 'rgba(255,255,255,0.05)' }));
       kids.push(new fabric.Rect({ left: 0, top: 33, width: w, height: 1, fill: 'rgba(255,255,255,0.08)' }));
@@ -777,7 +787,15 @@ export default function CanvasEditor({ note, code, access = 'owner' }) {
     const canvas = fab.current;
     if (!canvas || readOnly) return;
     const elements = serializeElements(canvas);
-    const snapThumb = thumbnail();
+    // A canvas with a cross-origin image becomes "tainted" and toDataURL()
+    // throws a SecurityError. Never let that block the actual save — the
+    // thumbnail is only a dashboard preview.
+    let snapThumb;
+    try {
+      snapThumb = thumbnail();
+    } catch {
+      snapThumb = undefined;
+    }
     setSaving(true);
     if (code && access === 'editor') {
       // collaborator: persist through the invite link
@@ -787,7 +805,7 @@ export default function CanvasEditor({ note, code, access = 'owner' }) {
         /* dirty stays true so the next autosave retries */
       }
     } else {
-      updateActive({ title, pages, elements, thumbnail: snapThumb });
+      updateActive({ title, pages, elements, ...(snapThumb !== undefined && { thumbnail: snapThumb }) });
       await saveActive();
     }
     setSaving(false);
