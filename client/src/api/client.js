@@ -4,7 +4,10 @@ import axios from 'axios';
  * Shared axios instance. The dev server proxies /api and /auth to Express,
  * and the JWT travels in an httpOnly cookie automatically (withCredentials).
  */
-const client = axios.create({ withCredentials: true });
+const client = axios.create({ 
+  baseURL: 'https://remimber-3w7g.onrender.com',
+  withCredentials: true 
+});
 
 /** Layer on top of axios so callers get data directly (or a thrown error). */
 export const api = {
