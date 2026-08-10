@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Theme lives in CSS variables on :root/.dark so the Fabric canvas and any
+ * non-Tailwind UI can read the same colors. Tailwind maps them via the
+ * extended `colors` in tailwind.config.js.
+ */
+:root {
+  --canvas: 244 243 239; /* warm paper background */
+  --panel: 255 255 255;  /* cards / surfaces */
+  --ink: 28 25 23;       /* primary text (warm black) */
+  --muted: 120 110 103;  /* secondary text */
+  --accent: 37 99 235;   /* royal blue */
+  --accent2: 13 148 136; /* teal */
+}
+
+.dark {
+  --canvas: 15 17 20;
+  --panel: 27 30 35;
+  --ink: 240 240 240;
+  --muted: 150 150 150;
+  --accent: 96 165 250;
+  --accent2: 45 212 191;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-canvas text-ink antialiased;
+}
+
+/* the note canvas itself is a DOM element Fabric manages; keep it dark-aware */
+.note-canvas {
+  --canvas-bg: var(--panel);
+  background: var(--canvas-bg);
+}
+
+/* realistic "book page" depth under the notebook */
+.note-canvas .canvas-container {
+  border-radius: 6px;
+  box-shadow:
+    0 30px 60px -30px rgb(0 0 0 / 0.4),
+    0 8px 20px -12px rgb(0 0 0 / 0.22),
+    0 0 0 1px rgb(0 0 0 / 0.04);
+}
+
+/* gradient action buttons (brand combo: royal blue → teal) */
+.btn-brand {
+  background-image: linear-gradient(120deg, rgb(var(--accent)), rgb(var(--accent2)));
+  color: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+}
+.btn-brand:hover:not(:disabled) {
+  opacity: 0.9;
+}
+.btn-brand:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* segmented group chip that wraps related toolbar buttons */
+.tool-group {
+  @apply flex items-center gap-0.5 rounded-xl border border-panel bg-canvas/70 p-1 shadow-sm;
+}
+.tool-group-label {
+  @apply mx-1.5 text-[10px] font-bold uppercase tracking-widest text-muted;
+}
+
+/* shared editor toolbar button style */
+.tool-btn {
+  @apply inline-flex items-center justify-center gap-1 rounded-lg border border-transparent bg-transparent px-2.5 py-1.5 text-sm font-medium text-muted transition hover:border-panel hover:bg-panel hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:pointer-events-none disabled:opacity-40;
+}
+
+/* 3D lift + press for toolbar buttons */
+.tool-btn {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55), 0 1px 1px rgb(0 0 0 / 0.05);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+.tool-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    0 3px 10px -2px rgb(0 0 0 / 0.22);
+}
+.tool-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.18);
+}
+/* icons pop a touch more when their button lifts */
+.tool-btn:hover:not(:disabled) .op-icon {
+  filter: drop-shadow(0 2px 1px rgb(0 0 0 / 0.22));
+}
+.dark .tool-btn {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 1px 1px rgb(0 0 0 / 0.3);
+}
+.dark .tool-btn:hover:not(:disabled) {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1), 0 3px 10px -2px rgb(0 0 0 / 0.5);
+}
+.dark .tool-btn:active:not(:disabled) {
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.4);
+}
+
+/* a couple of the main action buttons get a bolder 3D face */
+.btn-brand {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 2px 6px -1px rgb(0 0 0 / 0.3);
+}
+.btn-brand:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.4),
+    0 4px 12px -2px rgb(0 0 0 / 0.35);
+}
+.btn-brand:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgb(0 0 0 / 0.25);
+}
+
+.tool-btn.is-active {
+  @apply border-panel bg-panel text-ink shadow-inner;
+}
+.tool-btn.icon-only {
+  @apply min-w-[2rem] px-1.5;
+}
+
+/* small labelled group inside the editor property bar */
+.prop-label {
+  @apply text-[11px] font-semibold uppercase tracking-wide text-muted;
+}
+
+/* toast entrance */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

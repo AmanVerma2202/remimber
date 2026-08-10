@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="35 15 260 260" fill="none">
+  <defs>
+    <linearGradient id="iconGradient" x1="55" y1="35" x2="245" y2="260" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B5CF6" />
+      <stop offset="0.55" stop-color="#6D4AEF" />
+      <stop offset="1" stop-color="#4338CA" />
+    </linearGradient>
+    <linearGradient id="letterGradient" x1="145" y1="95" x2="205" y2="225" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6" />
+      <stop offset="1" stop-color="#5540D8" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#312E81" flood-opacity=".18" />
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="45" y="25" width="240" height="240" rx="55" fill="url(#iconGradient)" />
+    <path d="M91 57 C91 49.268 97.268 43 105 43 H214 C222.837 43 230 50.163 230 59 V196 L193 233 H105 C97.268 233 91 226.732 91 219 V57Z" fill="white" />
+    <path d="M230 196 L193 233 V207 C193 200.925 197.925 196 204 196 H230Z" fill="#D9D1FF" />
+    <rect x="75" y="78" width="43" height="18" rx="9" fill="#4338CA" />
+    <rect x="75" y="128" width="43" height="18" rx="9" fill="#4338CA" />
+    <rect x="75" y="178" width="43" height="18" rx="9" fill="#4338CA" />
+    <path d="M139 126 C139 113.85 148.85 104 161 104 H190 C198.284 104 205 110.716 205 119 V130 C205 138.284 198.284 145 190 145 H174 V208 H151 V128 C151 124.686 153.686 122 157 122 H181 C184.866 122 188 125.134 188 129 V130 C188 133.866 184.866 137 181 137 H174 V122 H161 C157.134 122 154 125.134 154 129 V208 H139 V126Z" fill="url(#letterGradient)" />
+  </g>
+</svg>
