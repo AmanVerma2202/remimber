@@ -37,19 +37,9 @@ app.use('/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api', uploadRoutes);
 
-// ---------- error handling ---------
 
-// Production: serve the built SPA from the same origin (cookies + WS work
-// with zero CORS friction). Falls back to index.html so deep links like
-// /s/CODE and /notes/:id keep working after a refresh.
-if (existsSync(DIST)) {
-  app.use(express.static(DIST));
-  app.use((req, res, next) => {
-    if (req.method !== 'GET') return next();
-    if (/^\/(api|auth|uploads|ws)\b/.test(req.path)) return next();
-    res.sendFile(path.join(DIST, 'index.html'));
-  });
-}
+
+
 
 
 app.use(notFound);
