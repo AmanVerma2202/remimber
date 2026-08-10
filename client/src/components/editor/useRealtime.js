@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { API_ORIGIN } from '../../api/client';
+import { WS_ORIGIN } from '../../api/client';
 
 /**
  * Live collaboration over a single WebSocket to /ws.
@@ -25,7 +26,7 @@ export function useRealtime(noteId, code, access) {
       // Same-origin when API_ORIGIN is empty, else the real API host (Render).
       const base = API_ORIGIN ? new URL(API_ORIGIN) : window.location;
       const wsProto = base.protocol === 'https:' ? 'wss' : 'ws';
-      const ws = new WebSocket(`${wsProto}://${base.host}/ws`);
+      const ws = new WebSocket(`${WS_ORIGIN}/ws`);
       wsRef.current = ws;
 
       ws.onopen = () =>
