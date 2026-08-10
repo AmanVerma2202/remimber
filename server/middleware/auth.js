@@ -6,17 +6,25 @@ export function setAuthCookie(res, user) {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
+  // Cross-site deployment (SPA on Vercel, API on Render) requires
+  // SameSite=None + Secure so the browser sends the cookie with XHR/fetch.
+  const crossSite = process.env.NODE_ENV === 'production';
   res.cookie('token', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // https only in prod
-    sameSite: 'lax',
+    secure: crossSite, // https only
+    sameSite: crossSite ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 }
 
 /** Clear the auth cookie (logout). */
 export function clearAuthCookie(res) {
-  res.clearCookie('token');
+  const crossSite = process.env.NODE_ENV === 'production';
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: crossSite,
+    sameSite: crossSite ? 'none' : 'lax',
+  });
 }
 
 /** Protect routes: read JWT from cookie, attach req.user. */

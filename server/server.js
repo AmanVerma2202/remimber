@@ -19,9 +19,23 @@ const DIST = path.join(__dirname, '..', 'client', 'dist');
 const app = express();
 
 // ---------- global middleware ---------
+app.set('trust proxy', true); // Render/Vercel terminate TLS before Express
+
 app.use(
   cors({
+<<<<<<< HEAD
     origin: process.env.CLIENT_URL || 'https://akaremimber.vercel.app/',
+=======
+    // Normalize trailing slashes and accept a comma-separated list so the
+    // CLIENT_URL value never breaks preflight (e.g. "...vercel.app/" vs "...vercel.app").
+    origin: (origin, cb) => {
+      const allowed = (process.env.CLIENT_URL || 'http://localhost:5173')
+        .split(',')
+        .map((u) => u.trim().replace(/\/+$/, ''));
+      const ok = !origin || allowed.includes(origin.replace(/\/+$/, ''));
+      cb(null, ok);
+    },
+>>>>>>> 4d7b618 (resolve error occurs while deployment)
     credentials: true, // allow the httpOnly auth cookie
   })
 );
@@ -38,8 +52,11 @@ app.use('/api/notes', noteRoutes);
 app.use('/api', uploadRoutes);
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 4d7b618 (resolve error occurs while deployment)
 
 
 app.use(notFound);

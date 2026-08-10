@@ -4,8 +4,7 @@ import react from '@vitejs/plugin-react';
 // The dev server proxies /api, /auth and /uploads to the Express backend so
 // the SPA and API stay on the same origin (no CORS friction, cookies work).
 // The backend port comes from your server/.env PORT via API_PORT (default 3001).
-const apiPort = process.env.API_PORT || 3002;
-const target = `http://localhost:${apiPort}`;
+const target = process.env.API_URL || `https://remimber-3w7g.onrender.com`;
 
 export default defineConfig({
   plugins: [react()],

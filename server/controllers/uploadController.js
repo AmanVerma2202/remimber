@@ -28,8 +28,10 @@ const upload = multer({
   },
 });
 
-/** Express-relative public url for a stored file, e.g. /uploads/123.png. */
-const publicUrl = (filename) => `/uploads/${filename}`;
+/** Absolute public url for a stored file, e.g. https://host/uploads/123.png.
+ *  Absolute (not relative) so images keep working when the SPA is hosted
+ *  on a different origin than the API (Vercel <-> Render). */
+const publicUrl = (req, filename) => `${req.protocol}://${req.get('host')}/uploads/${filename}`;
 
 /** Upload an image, returns a usable URL to embed in a note. */
 export const uploadImage = [
@@ -38,7 +40,7 @@ export const uploadImage = [
   (req, res, next) => {
     try {
       if (!req.file) throw Object.assign(new Error('No image file uploaded'), { statusCode: 400 });
-      res.status(201).json({ url: publicUrl(req.file.filename) });
+      res.status(201).json({ url: publicUrl(req, req.file.filename) });
     } catch (err) {
       next(err);
     }
@@ -82,7 +84,7 @@ export const importPdf = [
           width: viewport.width,
           height: viewport.height,
           style: { backgroundColor: '#ffffff' },
-          content: publicUrl(imageName),
+          content: publicUrl(req, imageName),
         });
         y += viewport.height + 20;
       }
