@@ -23,9 +23,11 @@ export function useRealtime(noteId, code, access) {
     let closed = false;
 
     const connect = () => {
-      // Same-origin when API_ORIGIN is empty, else the real API host (Render).
-      const base = API_ORIGIN ? new URL(API_ORIGIN) : window.location;
-      const wsProto = base.protocol === 'https:' ? 'wss' : 'ws';
+      // Collab WS lives on the same host as the API (Render). API_ORIGIN always
+      // resolves to a real origin (env override or the baked-in backend), so a
+      // build can never accidentally point /ws at a static host.
+      const u = new URL(API_ORIGIN);
+      const wsProto = u.protocol === 'https:' ? 'wss' : 'ws';
       const ws = new WebSocket(`${WS_ORIGIN}/ws`);
       wsRef.current = ws;
 

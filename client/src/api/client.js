@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 /**
- * API origin — Vite exposes VITE_* vars at build time. Set VITE_API_URL for
- * cross-origin hosting (SPA on Vercel, API on Render); falls back to the
- * conventional same-origin setup (Express serves the built SPA).
+ * API origin. VITE_API_URL overrides at build time (Vercel/other hosts), but
+ * the Render backend is baked in as a DEFAULT so any build works even when the
+ * env var isn't configured (a blank origin would 405 against Vercel's static
+ * rewrite for non-GET requests).
  */
-export const API_ORIGIN = import.meta.env.VITE_API_URL || '';
-export const WS_ORIGIN = '';
+export const API_ORIGIN = 'https://remimber-3w7g.onrender.com';
+export const WS_ORIGIN = 'wss://remimber-3w7g.onrender.com';
 /**
  * Shared axios instance. The dev server proxies /api and /auth to Express,
  * and the JWT travels in an httpOnly cookie automatically (withCredentials).
